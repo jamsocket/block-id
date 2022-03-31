@@ -32,6 +32,23 @@ impl<T: Copy + Hash + Eq> Alphabet<T> {
     }
 }
 
+impl Alphabet<char> {
+    pub fn alphanumeric() -> Alphabet<char> {
+        let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().collect();
+        Self::new(&alpha)
+    }
+
+    pub fn lowercase_alphanumeric() -> Alphabet<char> {
+        let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyz".chars().collect();
+        Self::new(&alpha)
+    }
+
+    pub fn lowercase_alpha() -> Alphabet<char> {
+        let alpha: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
+        Self::new(&alpha)
+    }
+}
+
 impl<T: Copy + Hash + Eq> InvertableTransform for Alphabet<T> {
     type Input = u8;
 

@@ -1,8 +1,7 @@
-use block_id::IdPermuter;
+use block_id::{BlockId, Alphabet};
 
 fn main() {
-    let alphabet: Vec<char> = "abcdefghijklmnopqrstuvwxyz0123456789".chars().collect();
-    let permuter = IdPermuter::new(&alphabet, 19, 6);
+    let permuter = BlockId::new(Alphabet::alphanumeric(), 19, 6);
     let mut i: u64 = 1;
 
     loop {
