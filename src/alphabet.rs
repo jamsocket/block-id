@@ -9,7 +9,7 @@ pub struct Alphabet<T: Copy + Hash + Eq> {
 
 impl<T: Copy + Hash + Eq> Alphabet<T> {
     pub fn new(alphabet: &[T]) -> Self {
-        let alphabet: Vec<T> = alphabet.iter().cloned().collect();
+        let alphabet: Vec<T> = alphabet.to_vec();
         let inv_index: HashMap<T, u8> = alphabet
             .iter()
             .enumerate()

@@ -45,7 +45,7 @@ mod test {
         let perm = Permute::new_from_seed(26, 118);
 
         let input = vec![24, 14];
-        
+
         round_trip(&perm, input);
     }
 }

@@ -1,18 +1,17 @@
-use block_id::{IdPermuter, InvertableTransform};
+use block_id::IdPermuter;
 
 fn main() {
-    let alphabet: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
-    let permuter = IdPermuter::new(&alphabet, 144);
+    let alphabet: Vec<char> = "abcdefghijklmnopqrstuvwxyz0123456789".chars().collect();
+    let permuter = IdPermuter::new(&alphabet, 19, 6);
     let mut i: u64 = 1;
 
     loop {
-        let code = permuter.forward(i);
-        let code_str: String = code.iter().collect();
-        println!("{}: {}", i, code_str);
-        
-        let result = permuter.backward(code);
+        let code = permuter.encode_string(i);
+        println!("{}: {}", i, code);
+
+        let result = permuter.decode_string(&code);
         assert_eq!(i, result);
-        
+
         i += 1;
     }
 }

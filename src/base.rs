@@ -2,11 +2,17 @@ use crate::transform::InvertableTransform;
 
 pub struct BaseConversion {
     radix: u8,
+    min_length: u8,
 }
 
 impl BaseConversion {
+    #[cfg(test)]
     pub fn new(radix: u8) -> Self {
-        BaseConversion { radix }
+        Self::new_with_min_length(radix, 1)
+    }
+
+    pub fn new_with_min_length(radix: u8, min_length: u8) -> Self {
+        BaseConversion { radix, min_length }
     }
 }
 
@@ -21,6 +27,10 @@ impl InvertableTransform for BaseConversion {
         while input > 0 {
             result.push((input % base as u64) as u8);
             input /= base as u64;
+        }
+
+        while result.len() < self.min_length as usize {
+            result.push(0);
         }
 
         result.reverse();

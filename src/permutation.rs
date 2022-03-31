@@ -32,7 +32,7 @@ impl Permutation {
         let mut rng = Pcg64Mcg::new(seed);
         let perm = generate_random_permutation(&mut rng, length);
 
-        Self::new(perm)        
+        Self::new(perm)
     }
 }
 
