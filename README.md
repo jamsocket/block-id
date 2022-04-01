@@ -1,4 +1,4 @@
-# `block_id`
+# `block-id`
 
 [![GitHub Repo stars](https://img.shields.io/github/stars/drifting-in-space/block-id?style=social)](https://github.com/drifting-in-space/block-id)
 [![wokflow state](https://github.com/drifting-in-space/block-id/workflows/Rust/badge.svg)](https://github.com/drifting-in-space/block-id/actions/workflows/rust.yml)
@@ -6,7 +6,7 @@
 [![docs.rs](https://img.shields.io/badge/docs-release-brightgreen)](https://docs.rs/block-id/)
 [![dependency status](https://deps.rs/repo/github/drifting-in-space/block-id/status.svg)](https://deps.rs/repo/github/drifting-in-space/block-id)
 
-`block_id` is a Rust library for generating opaque, unique, and short string values from (unsigned) integers.
+`block-id` is a Rust library for generating opaque, unique, and short string values from (unsigned) integers.
 
 **tl;dr:**
 
@@ -40,7 +40,7 @@ Random-looking alphanumeric strings are often used in place of sequential numeri
 - The higher information density of a larger alphabet allows for shorter codes.
 - Sequential identifiers reveal unnecessary information about ordering and object creation rate that you may not want to reveal.
 
-`block_id` is the successor to [`tiny_id`](https://github.com/drifting-in-space/block-id), which allows the creation of tightly-packed alphanumeric strings. `tiny_id` turned out to be difficult to use in a distributed environment because its state needs to be synchronized across every node that needs to generate IDs. Rather than building distributed functionality into a short ID generator, `block_id` provides a way of turning a sequential ID generator into a string ID generator by creating a one-to-one mapping between integers and random-looking short strings. That way, anything system of generating sequential numeric IDs (for example, a database's sequence generator) can be turned into a system for generating random-looking string IDs.
+`block-id` is the successor to [`tiny_id`](https://github.com/drifting-in-space/block-id), which allows the creation of tightly-packed alphanumeric strings. `tiny_id` turned out to be difficult to use in a distributed environment because its state needs to be synchronized across every node that needs to generate IDs. Rather than building distributed functionality into a short ID generator, `block-id` provides a way of turning a sequential ID generator into a string ID generator by creating a one-to-one mapping between integers and random-looking short strings. That way, anything system of generating sequential numeric IDs (for example, a database's sequence generator) can be turned into a system for generating random-looking string IDs.
 
 ```rust
 use block_id::{Alphabet, BlockId};
@@ -82,7 +82,7 @@ fn main() {
 
 ## How it works
 
-`block_id` applies a pipeline of reversible transformations on a data in order to turn it into a string.
+`block-id` applies a pipeline of reversible transformations on a data in order to turn it into a string.
 
 - **Base conversion** turns the input integer into a base-N representation where N is the number of characters in the desired output alphabet.
 - Rounds consisting of:
@@ -95,4 +95,4 @@ The number of rounds is the same as the number of digits in the base-N represent
 
 ## Security
 
-`block_id` is designed to make it easy for a human to distinguish between two sequential codes, *not* to make it impossible for an adversary to reverse. It should not be considered cryptographically secure.
+`block-id` is designed to make it easy for a human to distinguish between two sequential codes, *not* to make it impossible for an adversary to reverse. It should not be considered cryptographically secure.
