@@ -2,6 +2,30 @@
 
 `block_id` is a Rust library for generating opaque, unique, and short string values from (unsigned) integers.
 
+tl;dr:
+
+```rust
+use block_id::{Alphabet, BlockId};
+
+fn main() {
+    // Random seed.
+    let seed = 9876;
+    
+    // Code length.
+    let length = 5;
+
+    let generator = BlockId::new(Alphabet::alphanumeric(), seed, length);
+    
+    // Number to string.
+    assert_eq!("wjweA", &generator.encode_string(0));
+    assert_eq!("ZxJrE", &generator.encode_string(1));
+    assert_eq!("3e0IT", &generator.encode_string(2));
+
+    // String to number.
+    assert_eq!(2, generator.decode_string("3e0IT"));
+}
+```
+
 ## Introduction
 
 Random-looking alphanumeric strings are often used in place of sequential numeric IDs for user-facing purposes. This has several advantages:
@@ -23,29 +47,30 @@ fn main() {
     // The generator takes a u128 as a seed.
     let seed = 1234;
 
-    // The minimum length of a generated code.
-    let min_length = 4;
+    // The length of a generated code. This is really a _minimum_ length; larger numbers
+    // will be converted to longer codes since that's the only way to avoid collisions.
+    let length = 4;
 
     // A small amount of pre-caching work happens when we create the BlockId instance,
-    // so it's good to re-use it if possible.
-    let generator = BlockId::new(alphabet, seed, min_length);
+    // so it's good to re-use the same generator where possible.
+    let generator = BlockId::new(alphabet, seed, length);
     
     // Now that we have a generator, we can turn numbers into short IDs.
-    assert_eq!("hBiG", &generator.encode_string(0));
+    assert_eq!("In4R", &generator.encode_string(0));
 
-    assert_eq!("tSp9", &generator.encode_string(440));
-    assert_eq!("6z6y", &generator.encode_string(441));
-    assert_eq!("ft0M", &generator.encode_string(442));
-    assert_eq!("qaHw", &generator.encode_string(443));
+    assert_eq!("4A7N", &generator.encode_string(440));
+    assert_eq!("tSp9", &generator.encode_string(441));
+    assert_eq!("6z6y", &generator.encode_string(442));
+    assert_eq!("ft0M", &generator.encode_string(443));
 
     // When we've exhausted all 4-digit codes, we simply move on to 5-digit codes.
-    assert_eq!("8ldpN", &generator.encode_string(123456789));
+    assert_eq!("YeyKs", &generator.encode_string(123456789));
 
     // ...and so on.
-    assert_eq!("mI5hHw", &generator.encode_string(1234567890));
+    assert_eq!("pFbrRf", &generator.encode_string(1234567890));
 
     // Codes are reversible, assuming we have the seed they were generated with.
-    assert_eq!(1234567890, generator.decode_string("mI5hHw"));
+    assert_eq!(1234567890, generator.decode_string("pFbrRf"));
 }
 ```
 

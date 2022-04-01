@@ -58,7 +58,7 @@ impl<T: Copy + Hash + Eq> InvertableTransform for BlockId<T> {
     type Output = Vec<T>;
 
     fn forward(&self, v: u64) -> Vec<T> {
-        let mut v = self.base_convert.forward(v + 1);
+        let mut v = self.base_convert.forward(v);
 
         for _ in 0..v.len() {
             v = self.permute.forward(v);
@@ -78,7 +78,7 @@ impl<T: Copy + Hash + Eq> InvertableTransform for BlockId<T> {
             v = self.permute.backward(v);
         }
 
-        self.base_convert.backward(v) - 1
+        self.base_convert.backward(v)
     }
 }
 
