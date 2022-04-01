@@ -17,6 +17,10 @@ mod permute;
 mod rotate;
 mod transform;
 
+/// Represents a specific, deterministic two-way mapping between `u64` values and opaque IDs.
+/// 
+/// For `BlockId<char>`, additional functionality is provided for mapping between `u64`s and
+/// `String`s.
 pub struct BlockId<T: Copy + Hash + Eq> {
     alphabet: Alphabet<T>,
     base_convert: BaseConversion,
@@ -26,6 +30,8 @@ pub struct BlockId<T: Copy + Hash + Eq> {
 }
 
 impl<T: Copy + Hash + Eq> BlockId<T> {
+    /// Construct a block ID mapping. Mappings are deterministic based on the three parameters
+    /// passed at construction: the alphabet, seed, and minimum length.
     pub fn new(alphabet: Alphabet<T>, seed: u128, min_length: u8) -> Self {
         let base = alphabet.len();
         let base_convert = BaseConversion::new_with_min_length(base, min_length);
@@ -42,14 +48,16 @@ impl<T: Copy + Hash + Eq> BlockId<T> {
         }
     }
 
+    /// Encode a given `u64` into an opaque `Vec<T>`.
     #[inline]
-    pub fn forward(&self, v: u64) -> Vec<T> {
-        InvertableTransform::forward(self, v)
+    pub fn encode(&self, v: u64) -> Vec<T> {
+        self.forward(v)
     }
 
+    /// Decode an opaque `Vec<T>` from a given `u64`.
     #[inline]
-    pub fn backward(&self, v: Vec<T>) -> u64 {
-        InvertableTransform::backward(self, v)
+    pub fn decode(&self, v: Vec<T>) -> u64 {
+        self.backward(v)
     }
 }
 
@@ -82,11 +90,15 @@ impl<T: Copy + Hash + Eq> InvertableTransform for BlockId<T> {
     }
 }
 
+/// For the special case of `BlockId<char>`, helper encoders/decoders that use strings
+/// rather than vectors are provided.
 impl BlockId<char> {
+    /// Encode a `u64` into an opaque string.
     pub fn encode_string(&self, v: u64) -> String {
         self.forward(v).into_iter().collect()
     }
 
+    /// Decode a `u64` from an opaque string.
     pub fn decode_string(&self, v: &str) -> u64 {
         self.backward(v.chars().collect())
     }

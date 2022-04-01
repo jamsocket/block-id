@@ -1,4 +1,4 @@
-use block_id::{BlockId, Alphabet};
+use block_id::{Alphabet, BlockId};
 
 fn main() {
     let permuter = BlockId::new(Alphabet::alphanumeric(), 19, 6);

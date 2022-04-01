@@ -2,19 +2,47 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::transform::InvertableTransform;
 
+/// Represents a set of characters that are valid in a [`crate::BlockId`].
+///
+/// An alphabet is generic over the type of data used to represent a "character",
+/// but `Alphabet<char>` is used when generating string codes (otherwise, `BlockId`
+/// will generate a `Vec<T>`).
+///
+/// Several built-in alphabets are provided.
+///
+/// Examples:
+/// ```rust
+/// # use block_id::Alphabet;
+/// # fn main() {
+/// let alpha1: Alphabet<char> = Alphabet::alphanumeric();
+/// let hexchars: Vec<char> = "0123456789abcdef".chars().collect();
+/// let alpha2: Alphabet<char> = Alphabet::new(&hexchars);
+/// let alpha3: Alphabet<u32> = Alphabet::new(&[1234, 5678, 2345]);
+/// # }
+/// ```
 pub struct Alphabet<T: Copy + Hash + Eq> {
     alphabet: Vec<T>,
     inv_index: HashMap<T, u8>,
 }
 
 impl<T: Copy + Hash + Eq> Alphabet<T> {
+    /// Construct an alphabet from a list of values.
+    ///
+    /// Panics if the alphabet contains duplicates, or contains more than 256 elements.
     pub fn new(alphabet: &[T]) -> Self {
         let alphabet: Vec<T> = alphabet.to_vec();
+
+        assert!(
+            alphabet.len() <= u8::MAX as usize,
+            "Alphabet is too long (up to 256 elements supported)."
+        );
+
         let inv_index: HashMap<T, u8> = alphabet
             .iter()
             .enumerate()
             .map(|(k, v)| (*v, k as u8))
             .collect();
+
         assert_eq!(
             alphabet.len(),
             inv_index.len(),
@@ -33,16 +61,21 @@ impl<T: Copy + Hash + Eq> Alphabet<T> {
 }
 
 impl Alphabet<char> {
+    /// Returns an alphabet with lower- and upper-case letters, and numeral digits.
     pub fn alphanumeric() -> Alphabet<char> {
-        let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().collect();
+        let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            .chars()
+            .collect();
         Self::new(&alpha)
     }
 
+    /// Returns an alpahbet with lower-case letters and numeral digits.
     pub fn lowercase_alphanumeric() -> Alphabet<char> {
         let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyz".chars().collect();
         Self::new(&alpha)
     }
 
+    /// Returns an alphabet with lowercase letters only.
     pub fn lowercase_alpha() -> Alphabet<char> {
         let alpha: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
         Self::new(&alpha)
@@ -71,6 +104,13 @@ mod test {
     #[should_panic(expected = "Alphabet contained duplicate value(s).")]
     fn test_duplicate() {
         Alphabet::new(&['b', 'l', 'a', 'h', 'b', 'c']);
+    }
+
+    #[test]
+    #[should_panic(expected = "Alphabet is too long (up to 256 elements supported).")]
+    fn test_too_long() {
+        let chars: Vec<u16> = (0..30000).collect();
+        Alphabet::new(&chars);
     }
 
     #[test]
