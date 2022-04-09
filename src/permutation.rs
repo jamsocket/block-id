@@ -3,6 +3,7 @@ use rand_pcg::Pcg64Mcg;
 
 use crate::transform::InvertableTransform;
 
+#[derive(Clone)]
 pub struct Permutation {
     forward: Vec<u8>,
     inverse: Vec<u8>,

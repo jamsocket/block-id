@@ -1,5 +1,6 @@
 use crate::{permutation::Permutation, transform::InvertableTransform};
 
+#[derive(Clone)]
 pub struct Permute {
     permutation: Permutation,
 }

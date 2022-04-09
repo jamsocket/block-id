@@ -2,6 +2,7 @@ use std::marker::PhantomData;
 
 use crate::transform::InvertableTransform;
 
+#[derive(Clone)]
 pub struct Rotate<T> {
     _ph: PhantomData<T>,
 }

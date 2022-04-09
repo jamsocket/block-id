@@ -1,5 +1,6 @@
 use crate::transform::InvertableTransform;
 
+#[derive(Clone)]
 pub struct BaseConversion {
     radix: u8,
     min_length: u8,

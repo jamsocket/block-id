@@ -20,6 +20,7 @@ use crate::transform::InvertableTransform;
 /// let alpha3: Alphabet<u32> = Alphabet::new(&[1234, 5678, 2345]);
 /// # }
 /// ```
+#[derive(Clone)]
 pub struct Alphabet<T: Copy + Hash + Eq> {
     alphabet: Vec<T>,
     inv_index: HashMap<T, u8>,
@@ -55,6 +56,7 @@ impl<T: Copy + Hash + Eq> Alphabet<T> {
         }
     }
 
+    #[allow(clippy::len_without_is_empty)]
     pub fn len(&self) -> u8 {
         self.alphabet.len() as u8
     }

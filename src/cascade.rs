@@ -3,6 +3,7 @@ use crate::{
     transform::InvertableTransform,
 };
 
+#[derive(Clone)]
 pub struct Cascade {
     radix: u8,
 }

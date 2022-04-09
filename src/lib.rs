@@ -5,7 +5,7 @@ use base::BaseConversion;
 use cascade::Cascade;
 use permute::Permute;
 use rotate::Rotate;
-use std::hash::Hash;
+use std::{fmt::Debug, hash::Hash};
 use transform::InvertableTransform;
 
 mod add_mod;
@@ -18,15 +18,22 @@ mod rotate;
 mod transform;
 
 /// Represents a specific, deterministic two-way mapping between `u64` values and opaque IDs.
-/// 
+///
 /// For `BlockId<char>`, additional functionality is provided for mapping between `u64`s and
 /// `String`s.
+#[derive(Clone)]
 pub struct BlockId<T: Copy + Hash + Eq> {
     alphabet: Alphabet<T>,
     base_convert: BaseConversion,
     cascade: Cascade,
     rotate: Rotate<u8>,
     permute: Permute,
+}
+
+impl<T: Copy + Hash + Eq> Debug for BlockId<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "BlockId with alphabet size {}", self.alphabet.len())
+    }
 }
 
 impl<T: Copy + Hash + Eq> BlockId<T> {
@@ -106,7 +113,7 @@ impl BlockId<char> {
 
 #[cfg(test)]
 mod test {
-    use crate::{transform::test::round_trip, BlockId, Alphabet};
+    use crate::{transform::test::round_trip, Alphabet, BlockId};
 
     #[test]
     fn test_round_trip() {
@@ -115,5 +122,14 @@ mod test {
         for i in 600..800 {
             round_trip(&permuter, i);
         }
+    }
+
+    #[test]
+    fn test_debug() {
+        let block1 = BlockId::new(Alphabet::lowercase_alpha(), 118, 4);
+        assert_eq!("BlockId with alphabet size 26", format!("{:?}", block1));
+
+        let block2 = BlockId::new(Alphabet::alphanumeric(), 118, 4);
+        assert_eq!("BlockId with alphabet size 62", format!("{:?}", block2));
     }
 }
