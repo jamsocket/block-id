@@ -23,12 +23,12 @@ fn main() {
     let generator = BlockId::new(Alphabet::alphanumeric(), seed, length);
     
     // Number to string.
-    assert_eq!("wjweA", &generator.encode_string(0));
-    assert_eq!("ZxJrE", &generator.encode_string(1));
-    assert_eq!("3e0IT", &generator.encode_string(2));
+    assert_eq!(Some("wjweA".to_string()), generator.encode_string(0));
+    assert_eq!(Some("ZxJrE".to_string()), generator.encode_string(1));
+    assert_eq!(Some("3e0IT".to_string()), generator.encode_string(2));
 
     // String to number.
-    assert_eq!(2, generator.decode_string("3e0IT"));
+    assert_eq!(Some(2), generator.decode_string("3e0IT"));
 }
 ```
 
@@ -62,21 +62,21 @@ fn main() {
     let generator = BlockId::new(alphabet, seed, length);
     
     // Now that we have a generator, we can turn numbers into short IDs.
-    assert_eq!("In4R", &generator.encode_string(0));
+    assert_eq!(Some("In4R".to_string()), generator.encode_string(0));
 
-    assert_eq!("4A7N", &generator.encode_string(440));
-    assert_eq!("tSp9", &generator.encode_string(441));
-    assert_eq!("6z6y", &generator.encode_string(442));
-    assert_eq!("ft0M", &generator.encode_string(443));
+    assert_eq!(Some("4A7N".to_string()), generator.encode_string(440));
+    assert_eq!(Some("tSp9".to_string()), generator.encode_string(441));
+    assert_eq!(Some("6z6y".to_string()), generator.encode_string(442));
+    assert_eq!(Some("ft0M".to_string()), generator.encode_string(443));
 
     // When we've exhausted all 4-digit codes, we simply move on to 5-digit codes.
-    assert_eq!("YeyKs", &generator.encode_string(123456789));
+    assert_eq!(Some("YeyKs".to_string()), generator.encode_string(123456789));
 
     // ...and so on.
-    assert_eq!("pFbrRf", &generator.encode_string(1234567890));
+    assert_eq!(Some("pFbrRf".to_string()), generator.encode_string(1234567890));
 
     // Codes are reversible, assuming we have the seed they were generated with.
-    assert_eq!(1234567890, generator.decode_string("pFbrRf"));
+    assert_eq!(Some(1234567890), generator.decode_string("pFbrRf"));
 }
 ```
 

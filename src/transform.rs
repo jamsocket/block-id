@@ -2,9 +2,9 @@ pub trait InvertableTransform {
     type Input;
     type Output;
 
-    fn forward(&self, input: Self::Input) -> Self::Output;
+    fn forward(&self, input: Self::Input) -> Option<Self::Output>;
 
-    fn backward(&self, output: Self::Output) -> Self::Input;
+    fn backward(&self, output: Self::Output) -> Option<Self::Input>;
 }
 
 #[cfg(test)]
@@ -16,8 +16,8 @@ pub mod test {
     where
         T::Input: PartialEq + Debug + Clone,
     {
-        let output = transform.forward(value.clone());
-        let result = transform.backward(output);
+        let output = transform.forward(value.clone()).unwrap();
+        let result = transform.backward(output).unwrap();
 
         assert_eq!(result, value, "Input was not the same after a round trip.");
     }

@@ -5,10 +5,10 @@ fn main() {
     let mut i: u64 = 1;
 
     loop {
-        let code = permuter.encode_string(i);
+        let code = permuter.encode_string(i).unwrap();
         println!("{}: {}", i, code);
 
-        let result = permuter.decode_string(&code);
+        let result = permuter.decode_string(&code).unwrap();
         assert_eq!(i, result);
 
         i += 1;

@@ -19,14 +19,14 @@ impl<T> InvertableTransform for Rotate<T> {
     type Input = Vec<T>;
     type Output = Vec<T>;
 
-    fn forward(&self, mut value: Vec<T>) -> Vec<T> {
+    fn forward(&self, mut value: Vec<T>) -> Option<Vec<T>> {
         value.rotate_left(1);
-        value
+        Some(value)
     }
 
-    fn backward(&self, mut value: Vec<T>) -> Vec<T> {
+    fn backward(&self, mut value: Vec<T>) -> Option<Vec<T>> {
         value.rotate_right(1);
-        value
+        Some(value)
     }
 }
 
@@ -40,7 +40,7 @@ mod test {
         let before = vec![4, 5, 6, 7, 8];
         let after = vec![5, 6, 7, 8, 4];
 
-        assert_eq!(after.clone(), rot.forward(before.clone()));
-        assert_eq!(before, rot.backward(after));
+        assert_eq!(after.clone(), rot.forward(before.clone()).unwrap());
+        assert_eq!(before, rot.backward(after).unwrap());
     }
 }
