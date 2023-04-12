@@ -108,7 +108,7 @@ impl BlockId<char> {
 
     /// Decode a `u64` from an opaque string.
     pub fn decode_string(&self, v: &str) -> Option<u64> {
-        Some(self.backward(v.chars().collect())?)
+        self.backward(v.chars().collect())
     }
 }
 
