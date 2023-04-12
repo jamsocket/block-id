@@ -89,12 +89,12 @@ impl<T: Copy + Hash + Eq> InvertableTransform for Alphabet<T> {
 
     type Output = T;
 
-    fn forward(&self, index: u8) -> T {
-        self.alphabet[index as usize]
+    fn forward(&self, index: u8) -> Option<T> {
+        self.alphabet.get(index as usize).copied()
     }
 
-    fn backward(&self, value: T) -> u8 {
-        self.inv_index[&value]
+    fn backward(&self, value: T) -> Option<u8> {
+        self.inv_index.get(&value).copied()
     }
 }
 
@@ -116,14 +116,22 @@ mod test {
     }
 
     #[test]
+    fn test_invalid_character() {
+        let chars = Alphabet::lowercase_alpha();
+        assert_eq!(None, chars.backward('!'));
+
+        assert_eq!(None, chars.forward(26));
+    }
+
+    #[test]
     fn test_forward() {
         let chars: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
         let alpha = Alphabet::new(&chars);
 
         assert_eq!(26, alpha.len());
 
-        assert_eq!('a', alpha.forward(0));
-        assert_eq!('z', alpha.forward(25));
+        assert_eq!('a', alpha.forward(0).unwrap());
+        assert_eq!('z', alpha.forward(25).unwrap());
     }
 
     #[test]
@@ -131,8 +139,8 @@ mod test {
         let chars: Vec<char> = "abcdefghijklmnopqrstuvwxyz".chars().collect();
         let alpha = Alphabet::new(&chars);
 
-        assert_eq!(0, alpha.backward('a'));
-        assert_eq!(25, alpha.backward('z'));
+        assert_eq!(0, alpha.backward('a').unwrap());
+        assert_eq!(25, alpha.backward('z').unwrap());
     }
 
     #[test]
@@ -145,8 +153,8 @@ mod test {
         assert_eq!(52, alpha.len());
 
         for i in 0..chars.len() as u8 {
-            let c = alpha.forward(i);
-            let v = alpha.backward(c);
+            let c = alpha.forward(i).unwrap();
+            let v = alpha.backward(c).unwrap();
 
             assert_eq!(i, v);
         }

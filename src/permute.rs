@@ -20,18 +20,18 @@ impl InvertableTransform for Permute {
     type Input = Vec<u8>;
     type Output = Vec<u8>;
 
-    fn forward(&self, mut input: Vec<u8>) -> Vec<u8> {
+    fn forward(&self, mut input: Vec<u8>) -> Option<Vec<u8>> {
         for elem in input.iter_mut() {
-            *elem = self.permutation.forward(*elem);
+            *elem = self.permutation.forward(*elem)?;
         }
-        input
+        Some(input)
     }
 
-    fn backward(&self, mut output: Vec<u8>) -> Vec<u8> {
+    fn backward(&self, mut output: Vec<u8>) -> Option<Vec<u8>> {
         for elem in output.iter_mut() {
-            *elem = self.permutation.backward(*elem);
+            *elem = self.permutation.backward(*elem)?;
         }
-        output
+        Some(output)
     }
 }
 

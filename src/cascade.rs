@@ -19,7 +19,7 @@ impl InvertableTransform for Cascade {
 
     type Output = Vec<u8>;
 
-    fn forward(&self, mut input: Vec<u8>) -> Vec<u8> {
+    fn forward(&self, mut input: Vec<u8>) -> Option<Vec<u8>> {
         let mut last = 0;
 
         for v in input.iter_mut() {
@@ -27,10 +27,10 @@ impl InvertableTransform for Cascade {
             last = *v;
         }
 
-        input
+        Some(input)
     }
 
-    fn backward(&self, mut output: Vec<u8>) -> Vec<u8> {
+    fn backward(&self, mut output: Vec<u8>) -> Option<Vec<u8>> {
         let mut last = 0;
 
         for v in output.iter_mut() {
@@ -39,7 +39,7 @@ impl InvertableTransform for Cascade {
             last = tmp;
         }
 
-        output
+        Some(output)
     }
 }
 
@@ -56,7 +56,7 @@ mod test {
             let input = vec![16, 16, 25];
             let expected = vec![16, 6, 5];
 
-            assert_eq!(expected, cascade.forward(input));
+            assert_eq!(expected, cascade.forward(input).unwrap());
         }
 
         {
@@ -64,7 +64,7 @@ mod test {
             let input = vec![5, 9, 120, 5, 7, 15];
             let expected = vec![5, 14, 11, 16, 23, 38];
 
-            assert_eq!(expected, cascade.forward(input));
+            assert_eq!(expected, cascade.forward(input).unwrap());
         }
     }
 
@@ -74,7 +74,7 @@ mod test {
         let input = vec![5, 9, 120, 5, 7, 15];
         let expected = vec![5, 14, 11, 16, 23, 38];
 
-        assert_eq!(input, cascade.backward(expected));
+        assert_eq!(input, cascade.backward(expected).unwrap());
     }
 
     #[test]

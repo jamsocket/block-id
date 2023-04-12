@@ -57,13 +57,13 @@ impl<T: Copy + Hash + Eq> BlockId<T> {
 
     /// Encode a given `u64` into an opaque `Vec<T>`.
     #[inline]
-    pub fn encode(&self, v: u64) -> Vec<T> {
+    pub fn encode(&self, v: u64) -> Option<Vec<T>> {
         self.forward(v)
     }
 
     /// Decode an opaque `Vec<T>` from a given `u64`.
     #[inline]
-    pub fn decode(&self, v: Vec<T>) -> u64 {
+    pub fn decode(&self, v: Vec<T>) -> Option<u64> {
         self.backward(v)
     }
 }
@@ -72,25 +72,26 @@ impl<T: Copy + Hash + Eq> InvertableTransform for BlockId<T> {
     type Input = u64;
     type Output = Vec<T>;
 
-    fn forward(&self, v: u64) -> Vec<T> {
-        let mut v = self.base_convert.forward(v);
+    fn forward(&self, v: u64) -> Option<Vec<T>> {
+        let mut v = self.base_convert.forward(v)?;
 
         for _ in 0..v.len() {
-            v = self.permute.forward(v);
-            v = self.cascade.forward(v);
-            v = self.rotate.forward(v);
+            v = self.permute.forward(v)?;
+            v = self.cascade.forward(v)?;
+            v = self.rotate.forward(v)?;
         }
 
         v.iter().map(|d| self.alphabet.forward(*d)).collect()
     }
 
-    fn backward(&self, v: Vec<T>) -> u64 {
-        let mut v: Vec<u8> = v.iter().map(|d| self.alphabet.backward(*d)).collect();
+    fn backward(&self, v: Vec<T>) -> Option<u64> {
+        let v: Option<Vec<u8>> = v.iter().map(|d| self.alphabet.backward(*d)).collect();
+        let mut v = v?;
 
         for _ in 0..v.len() {
-            v = self.rotate.backward(v);
-            v = self.cascade.backward(v);
-            v = self.permute.backward(v);
+            v = self.rotate.backward(v)?;
+            v = self.cascade.backward(v)?;
+            v = self.permute.backward(v)?;
         }
 
         self.base_convert.backward(v)
@@ -101,13 +102,13 @@ impl<T: Copy + Hash + Eq> InvertableTransform for BlockId<T> {
 /// rather than vectors are provided.
 impl BlockId<char> {
     /// Encode a `u64` into an opaque string.
-    pub fn encode_string(&self, v: u64) -> String {
-        self.forward(v).into_iter().collect()
+    pub fn encode_string(&self, v: u64) -> Option<String> {
+        Some(self.forward(v)?.into_iter().collect())
     }
 
     /// Decode a `u64` from an opaque string.
-    pub fn decode_string(&self, v: &str) -> u64 {
-        self.backward(v.chars().collect())
+    pub fn decode_string(&self, v: &str) -> Option<u64> {
+        Some(self.backward(v.chars().collect())?)
     }
 }
 

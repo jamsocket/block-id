@@ -41,12 +41,12 @@ impl InvertableTransform for Permutation {
     type Input = u8;
     type Output = u8;
 
-    fn forward(&self, v: u8) -> u8 {
-        self.forward[v as usize]
+    fn forward(&self, v: u8) -> Option<u8> {
+        self.forward.get(v as usize).copied()
     }
 
-    fn backward(&self, v: u8) -> u8 {
-        self.inverse[v as usize]
+    fn backward(&self, v: u8) -> Option<u8> {
+        self.inverse.get(v as usize).copied()
     }
 }
 
@@ -69,15 +69,15 @@ mod tests {
     fn test_permutation() {
         let perm = Permutation::new(vec![3, 1, 0, 2]);
 
-        assert_eq!(3, perm.forward(0));
-        assert_eq!(1, perm.forward(1));
-        assert_eq!(0, perm.forward(2));
-        assert_eq!(2, perm.forward(3));
+        assert_eq!(3, perm.forward(0).unwrap());
+        assert_eq!(1, perm.forward(1).unwrap());
+        assert_eq!(0, perm.forward(2).unwrap());
+        assert_eq!(2, perm.forward(3).unwrap());
 
-        assert_eq!(0, perm.backward(3));
-        assert_eq!(1, perm.backward(1));
-        assert_eq!(2, perm.backward(0));
-        assert_eq!(3, perm.backward(2));
+        assert_eq!(1, perm.backward(1).unwrap());
+        assert_eq!(0, perm.backward(3).unwrap());
+        assert_eq!(2, perm.backward(0).unwrap());
+        assert_eq!(3, perm.backward(2).unwrap());
     }
 
     #[test]
