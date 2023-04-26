@@ -116,6 +116,12 @@ impl BlockId<char> {
 mod test {
     use crate::{transform::test::round_trip, Alphabet, BlockId};
 
+	#[test]
+	fn long_str() {
+        let permuter = BlockId::new(Alphabet::lowercase_alpha(), 118, 4);
+		println!("{:?}", permuter.decode("lskdjfalskkljjdg".chars().collect()));
+	}
+
     #[test]
     fn test_round_trip() {
         let permuter = BlockId::new(Alphabet::lowercase_alpha(), 118, 4);
