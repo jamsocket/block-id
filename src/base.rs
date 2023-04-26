@@ -43,17 +43,11 @@ impl InvertableTransform for BaseConversion {
         let mut result: u64 = 0;
         let base = self.radix;
 
-        //(len+1) * log2(base) is the longest binary number representable
-        if ((data.len() as u32) + 1) * base.ilog2() >= 64 {
-            return None;
-        }
-
         for (i, b) in data.iter().enumerate() {
             if i > 0 {
-                result *= base as u64;
+                result = result.checked_mul(base as u64)?;
             }
-            result += *b as u64;
-            println!("{:?}", result);
+            result = result.checked_add(*b as u64)?;
         }
 
         Some(result)
