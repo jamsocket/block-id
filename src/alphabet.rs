@@ -71,7 +71,7 @@ impl Alphabet<char> {
         Self::new(&alpha)
     }
 
-    /// Returns an alpahbet with lower-case letters and numeral digits.
+    /// Returns an alphabet with lower-case letters and numeral digits.
     pub fn lowercase_alphanumeric() -> Alphabet<char> {
         let alpha: Vec<char> = "0123456789abcdefghijklmnopqrstuvwxyz".chars().collect();
         Self::new(&alpha)
