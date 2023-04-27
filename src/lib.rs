@@ -117,6 +117,16 @@ mod test {
     use crate::{transform::test::round_trip, Alphabet, BlockId};
 
     #[test]
+    fn long_str() {
+        let permuter = BlockId::new(Alphabet::lowercase_alpha(), 118, 4);
+        assert_eq!(
+            permuter.decode("dsasfsdnlkdfjsl".chars().collect()),
+            None,
+            "if string is too long should return None since no 1:1 map to u64"
+        );
+    }
+
+    #[test]
     fn test_round_trip() {
         let permuter = BlockId::new(Alphabet::lowercase_alpha(), 118, 4);
 

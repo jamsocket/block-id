@@ -45,9 +45,9 @@ impl InvertableTransform for BaseConversion {
 
         for (i, b) in data.iter().enumerate() {
             if i > 0 {
-                result *= base as u64;
+                result = result.checked_mul(base as u64)?;
             }
-            result += *b as u64;
+            result = result.checked_add(*b as u64)?;
         }
 
         Some(result)
